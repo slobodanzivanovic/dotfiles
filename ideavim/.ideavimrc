@@ -1,0 +1,62 @@
+let mapleader = " "
+
+set scrolloff=10
+set number relativenumber
+set showmode
+set smartcase
+set incsearch
+set hlsearch
+set visualbell
+
+set easymotion
+set highlightedyank
+set nerdtree
+
+inoremap jj <Esc>
+
+nnoremap <A-h> <C-w>h
+nnoremap <A-l> <C-w>l
+nnoremap <A-k> <C-w>k
+nnoremap <A-j> <C-w>j
+
+nnoremap [[ <Action>(MethodUp)
+nnoremap ]] <Action>(MethodDown)
+
+map gcc <Action>(CommentByLineComment)
+
+map <leader>x :NERDTreeToggle<CR>
+
+map <leader>zc :action CollapseAllRegions<CR>
+map <leader>zo :action ExpandAllRegions<CR>
+
+map ss <Action>(SplitVertically)
+map sv <Action>(SplitHorizontally)
+map su <Action>(Unsplit)
+
+map <leader>dd <Action>(ToggleDistractionFreeMode)
+map <leader>dz <Action>(ToggleZenMode)
+map <leader>df <Action>(ToggleFullScreen)
+
+map <leader>ff <Action>(SearchEverywhere)
+
+map <leader>ca <Action>(ShowIntentionActions)
+nmap <leader>gD <Action>(GotoDeclaration)
+nmap <leader>gt <Action>(GotoTypeDeclaration)
+nmap <leader>gi <Action>(GotoImplementation)
+nmap K <Action>(ShowHoverInfo)
+nmap <leader>gu <Action>(ShowUsages)
+nnoremap <leader>rf <Action>(ReformatCode)
+vnoremap <leader>rf <Action>(ReformatCode)
+
+map <leader>rj <Action>(Run)
+map <leader>rn <Action>(RenameElement)
+
+nmap <C-j> <Action>(MoveLineDown)
+xmap <C-j> <Action>(MoveLineDown)
+nmap <C-k> <Action>(MoveLineUp)
+xmap <C-k> <Action>(MoveLineUp)
+
+nmap <leader>tp <Action>(PreviousTab)
+nmap <leader>tn <Action>(NextTab)
+
+nmap <leader>te <Action>(ActivateTerminalToolWindow)
