@@ -33,6 +33,9 @@ return {
 
     require("telescope").setup {
       defaults = {
+        file_ignore_patterns = {
+          "node_modules",
+        },
         preview = {
           filesize_limit = 0.1,
         },
