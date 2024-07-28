@@ -23,7 +23,3 @@ style = "Italic"
 [font.normal]
 family = "ComicCode Nerd Font"
 style = "Regular"
-
-[window]
-opacity = 0.98
-startup_mode = "SimpleFullscreen"
