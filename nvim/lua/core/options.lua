@@ -1,52 +1,41 @@
-vim.opt.autowrite = true
-vim.opt.completeopt = "menu,menuone,noselect"
-vim.opt.conceallevel = 2
-vim.opt.confirm = true
-vim.opt.cursorline = true
-vim.opt.expandtab = true
-vim.opt.fillchars = {
-  foldopen = "",
-  foldclose = "",
-  fold = " ",
-  foldsep = " ",
-  diff = "╱",
-  eob = " ",
-}
-vim.opt.foldlevel = 99
-vim.opt.formatoptions = "jcroqlnt"
-vim.opt.grepformat = "%f:%l:%c:%m"
-vim.opt.grepprg = "rg --vimgrep"
--- vim.opt.guicursor =
--- "n-v-c-i:block,ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
-vim.opt.ignorecase = true
-vim.opt.inccommand = "nosplit"
-vim.opt.laststatus = 3
-vim.opt.list = true
+vim.opt.guicursor =
+    "n-v-c-i:block,ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"
+
 vim.opt.number = true
--- vim.opt.pumblend = 10
-vim.opt.pumheight = 10
 vim.opt.relativenumber = true
-vim.opt.scrolloff = 4
-vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
-vim.opt.shiftround = true
-vim.opt.shiftwidth = 2
-vim.opt.shortmess:append "c"
-vim.opt.showmode = false
-vim.opt.sidescrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.smartcase = true
+
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+
 vim.opt.smartindent = true
-vim.opt.spelllang = { "en" }
+
+vim.opt.wrap = false
+
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv "HOME" .. "/.vim/undodir"
+vim.opt.undofile = true
+
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+
+vim.opt.termguicolors = true
+
+vim.opt.scrolloff = 8
+vim.opt.signcolumn = "yes"
+vim.opt.isfname:append "@-@"
+
+vim.opt.inccommand = "nosplit"
 vim.opt.splitbelow = true
 vim.opt.splitkeep = "screen"
 vim.opt.splitright = true
-vim.opt.swapfile = false
-vim.opt.tabstop = 2
-vim.opt.termguicolors = true
-vim.opt.undofile = true
-vim.opt.undolevels = 10000
-vim.opt.updatetime = 200
-vim.opt.virtualedit = "block"
-vim.opt.wildmode = "longest:full,full"
+
+vim.opt.updatetime = 50
+
+vim.opt.confirm = true
+vim.opt.cursorline = true
+vim.opt.pumblend = 10
+vim.opt.pumheight = 10
 vim.opt.winminwidth = 5
-vim.opt.wrap = false
