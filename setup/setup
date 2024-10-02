@@ -1,0 +1,195 @@
+#!/bin/sh
+
+echo "Holaaa"
+sleep 1
+
+# Check if Homebrew is installed
+echo "Checking for Homebrew..."
+sleep 1
+if command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is already installed."
+else
+    echo "Homebrew is not installed. Installing Homebrew..."
+    sleep 1
+
+    # Install Homebrew
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Verify installation
+    sleep 1
+    if command -v brew >/dev/null 2>&1; then
+        echo "Homebrew installation successful."
+    else
+        echo "Homebrew installation failed."
+    fi
+    sleep 1
+fi
+
+# Symlink dotfiles
+# TODO: Do these need to be done before installing Oh My Zsh?
+echo "Symlinking dotfiles..."
+sleep 1
+
+# Symlink .zshenv to home directory
+if [ ! -L "$HOME/.zshenv" ] && [ ! -e "$HOME/.zshenv" ]; then
+    ln -s "$HOME/.dotfiles/home/.zshenv" "$HOME/.zshenv"
+    echo "Symlinked .zshenv"
+else
+    echo ".zshenv already exists, skipping"
+fi
+
+# Declare an array of dotfiles to symlink to ~/.config/
+dotfiles=(
+    "$HOME/.dotfiles/xdg_config_home/wezterm"
+    "$HOME/.dotfiles/xdg_config_home/git"
+    "$HOME/.dotfiles/xdg_config_home/nvim"
+    "$HOME/.dotfiles/xdg_config_home/tmux"
+    "$HOME/.dotfiles/xdg_config_home/zsh"
+)
+
+# Create symlinks for each dotfile in the array
+for str in "${dotfiles[@]}"; do
+    target="$XDG_CONFIG_HOME/$(basename $str)"
+    if [ ! -L "$target" ] && [ ! -e "$target" ]; then
+        ln -s "$str" "$target"
+        echo "Symlinked $(basename $str)"
+    else
+        echo "$target already exists, skipping"
+    fi
+done
+
+# Check if Oh My Zsh is installed
+echo "Checking for Oh My Zsh"
+sleep 1
+if [ -d "$HOME/.oh-my-zsh" ]; then
+    echo "Oh My Zsh is already installed."
+else
+    echo "Oh My Zsh is not installed. Installing Oh My Zsh..."
+    sleep 1
+
+    # Install Oh My Zsh
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sleep 1
+
+    # Verify installation
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        echo "Oh My Zsh installation successful."
+    else
+        echo "Oh My Zsh installation failed."
+    fi
+fi
+
+# Install Homebrew packages
+echo "Installing Homebrew packages..."
+sleep 1
+echo "Can take a while so sit back and relax..."
+brew bundle --file=~/.dotfiles/setup/Brewfile
+echo "Homebrew packages installed..."
+sleep 1
+
+# Create Developer directory
+echo "Creating Developer directory"
+sleep 1
+if [ ! -d "$HOME/Developer" ]; then
+    mkdir "$HOME/Developer"
+    echo "Developer directory created"
+else
+    echo "Developer directory already exists, skipping"
+fi
+sleep 1
+
+# Setup Mac specific settings
+echo "Setting up Mac specific settings"
+sleep 1
+osascript -e 'tell application "System Preferences" to quit'
+sleep 1
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# Disable the sound effects on boot
+sudo nvram SystemAudioVolume=" "
+# Always show scrollbars
+defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+# Disable automatic capitalization as it’s annoying when typing code
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+# Disable smart dashes as they’re annoying when typing code
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+# Disable smart quotes as they’re annoying when typing code
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+# Disable auto-correct
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+# Increase sound quality for Bluetooth headphones/headsets
+defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+# Disable press-and-hold for keys in favor of key repeat
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+# Set a blazingly fast keyboard repeat rate
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
+# Re-enable subpixel antialiasing
+defaults write -g CGFontRenderingFontSmoothingDisabled -bool FALSE
+# Enable subpixel font rendering on non-Apple LCDs
+# Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
+defaults write NSGlobalDomain AppleFontSmoothing -int 1
+# Finder: show hidden files by default
+defaults write com.apple.finder AppleShowAllFiles -bool true
+# Finder: show all filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+# Use list view in all Finder windows by default
+# Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
+defaults write com.apple.finder FXPreferredViewStyle -string "icnv"
+# Disable the warning before emptying the Trash
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+# Don’t automatically rearrange Spaces based on most recent use
+defaults write com.apple.dock mru-spaces -bool false
+# Remove the auto-hiding Dock delay
+defaults write com.apple.dock autohide-delay -float 0
+# Remove the animation when hiding/showing the Dock
+defaults write com.apple.dock autohide-time-modifier -float 0
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
+# Don’t show recent applications in Dock
+defaults write com.apple.dock show-recents -bool false
+sleep 1
+
+echo "Mac specific settings done..."
+sleep 1
+
+# Install Node packages
+echo "Checking for npm..."
+sleep 1
+
+if command -v npm >/dev/null 2>&1; then
+    echo "npm is installed. Installing Node packages..."
+    sleep 1
+    if npm install -g typescript ts-node eslint prettier yarn neovim; then
+        echo "Node packages installed successfully."
+    else
+        echo "Failed to install some Node packages."
+        exit 1
+    fi
+else
+    echo "npm is not installed. Please install npm and try again."
+    exit 1
+fi
+sleep 1
+
+# Generate SSH key
+if [ -f "$HOME/.ssh/id_ed25519" ]; then
+    echo "SSH key already exists. Skipping SSH key generation."
+else
+    echo "Generating SSH key"
+    sh "$HOME/.dotfiles/scripts/ssh"
+    sleep 1
+fi
+
+echo "Happy hacking!"
