@@ -14,16 +14,18 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
-require("core")
+require("config")
 require("lazy").setup({
     spec = {
         { import = "plugins" },
     },
+    defaults = {
+        lazy = false,
+        version = false,
+    },
     ui = {
-        backdrop = 30,
+        -- backdrop = 30,
+        -- border = "rounded",
     },
     change_detection = {
         notify = false,
@@ -31,6 +33,9 @@ require("lazy").setup({
     performance = {
         rtp = {
             disabled_plugins = {
+                -- "matchit",
+                -- "matchparen",
+                -- "netrwPlugin",
                 "2html_plugin",
                 "tohtml",
                 "getscript",

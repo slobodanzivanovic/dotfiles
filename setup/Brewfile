@@ -10,7 +10,7 @@ brew "tmux"
 
 cask "firefox"
 cask "google-chrome"
-cask "wezterm"
+cask "alacritty"
 cask "visual-studio-code"
 cask "sublime-text"
 cask "intellij-idea"

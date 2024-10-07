@@ -16,7 +16,7 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR=nvim
 export VISUAL=nvim
 export GIT_EDITOR=nvim
-export TERMINAL=wezterm
+export TERMINAL=alacritty
 
 alias ..="cd .."
 alias ...="cd ../.."

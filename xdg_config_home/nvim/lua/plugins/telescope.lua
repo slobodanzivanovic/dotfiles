@@ -37,6 +37,15 @@ return {
                 },
             },
             defaults = {
+                -- layout_strategy = "horizontal",
+                -- layout_config = {
+                --     horizontal = {
+                --         prompt_position = "bottom",
+                --         width = { padding = 0 },
+                --         height = { padding = 0 },
+                --         preview_cutoff = 60,
+                --     },
+                -- },
                 file_ignore_patterns = {
                     "node_modules",
                     ".git",

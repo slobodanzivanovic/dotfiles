@@ -1,7 +1,12 @@
 local set = vim.opt_local
+local map = vim.keymap.set
+
+local function augroup(name)
+    return vim.api.nvim_create_augroup(name, { clear = true })
+end
 
 vim.api.nvim_create_autocmd("TermOpen", {
-    group = vim.api.nvim_create_augroup("custom-term-open", {}),
+    group = augroup("custom-term-open"),
     callback = function()
         set.number = false
         set.relativenumber = false
@@ -11,10 +16,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
     end,
 })
 
-vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
-vim.keymap.set("n", "<leader>te", ":split | te<CR>i", { silent = true })
+map("t", "<esc><esc>", "<c-\\><c-n>")
+map("n", "<leader>te", ":split | te<CR>i", { silent = true })
 
-vim.keymap.set("n", ",st", function()
+map("n", ",st", function()
     vim.cmd.new()
     vim.cmd.wincmd("J")
     vim.api.nvim_win_set_height(0, 10)

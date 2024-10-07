@@ -8,6 +8,15 @@ return {
         "MunifTanjim/nui.nvim",
     },
     config = function()
+        vim.fn.sign_define("DiagnosticSignError",
+        {text = " ", texthl = "DiagnosticSignError"})
+        vim.fn.sign_define("DiagnosticSignWarn",
+        {text = " ", texthl = "DiagnosticSignWarn"})
+        vim.fn.sign_define("DiagnosticSignInfo",
+        {text = " ", texthl = "DiagnosticSignInfo"})
+        vim.fn.sign_define("DiagnosticSignHint",
+        {text = " ", texthl = "DiagnosticSignHint"})
+
         require("neo-tree").setup({
             popup_border_style = "rounded",
             source_selector = {
@@ -38,7 +47,7 @@ return {
         })
     end,
     keys = {
-        { "<leader>ee", "<cmd>Neotree toggle right<CR>" },
+        { "<leader>ee", "<cmd>Neotree toggle left<CR>" },
         { "<leader>bf", "<cmd>Neotree buffers reveal float<CR>" },
         { "<leader>ef", "<cmd>Neotree focus<CR>" },
     },
