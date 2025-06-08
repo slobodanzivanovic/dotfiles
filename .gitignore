@@ -1,0 +1,7 @@
+.DS_Store
+**/.DS_Store
+
+.zsh_history
+.zsh_sessions
+.zcompdump*
+xdg_config_home/zsh/plugins
