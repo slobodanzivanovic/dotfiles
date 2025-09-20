@@ -19,3 +19,11 @@ libxml2-dev
 libxmlsec1-dev
 libffi-dev
 liblzma-dev
+libxi6
+libxrender1
+libxtst6
+mesa-utils
+libfontconfig
+libgtk-3-bin
+tar
+dbus-user-session
