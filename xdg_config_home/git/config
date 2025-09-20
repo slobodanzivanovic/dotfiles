@@ -1,0 +1,30 @@
+[user]
+  name = Slobodan Zivanovic
+  email = 219014701+slobodanzivanovic@users.noreply.github.com
+[init]
+  defaultBranch = master
+[core]
+  autocrlf = false
+[pull]
+  rebase = true
+[rebase]
+  autoStash = true
+[fetch]
+  prune = true
+  pruneTags = true
+[push]
+  default = current
+  followTags = true
+[color]
+  ui = auto
+[difftool]
+  prompt = false
+[mergetool]
+  prompt = true
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[submodule]
+  active = all

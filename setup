@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+
+##############################
+#### CONSTANTS
+##############################
+PLAIN='\033[0m'
+BOLD='\033[1m'
+
+WHITE='\033[29m'
+GREEN='\033[32m'
+BLUE='\033[33m'
+RED='\033[31m'
+
+##############################
+#### FUNCTIONS
+##############################
+fecho(){
+	echo -e "${BOLD}${2:-$WHITE}$1${PLAIN}"
+}
+
+clear_line(){
+	echo -ne "\033[0K"
+}
+
+progress(){
+	if [ "$3" ]; then
+		echo -en "\033[0K$3 ["
+	else
+		echo -en "\033[0K["
+	fi
+	for x in $(seq $1); do
+		echo -ne "="
+	done
+	if [ ! $1 = $2 ]; then
+		echo -ne ">"
+	fi
+	for x in $(seq $(($2-$1-1))); do
+		echo -ne "."
+	done
+
+	echo -n "] "
+	printf "${BOLD}(%4s)${PLAIN}" "$((100*$1/$2))%"
+
+	if [ $1 = $2 ]; then
+		echo -ne "\n"
+	else
+		echo -ne "\r"
+	fi
+}
+
+install_package(){
+	if [ ! `command -v $1` ]; then
+		fecho "Installing $1..."
+		sudo apt install $1
+		if [ $? -eq 0 ]; then
+			fecho "$1 has been succesfully installed!" $GREEN
+		else
+			fecho "$1 couldn't be installed!" $RED
+		fi
+	else
+		echo `fecho $1 $GREEN` "already installed!"
+	fi
+}
+
+# only for some stuff... most of apps should be installed manually by downloading from official websites...
+install_snap_package(){
+	if [ ! `command -v ${2:-$1}` ]; then
+		fecho "Installing ${2:-$1}..."
+		sudo snap install $1 --classic
+		if [ $? -eq 0 ]; then
+			fecho "${2:-$1} has been succesfully installed!" $GREEN
+		else
+			fecho "${2:-$1} couldn't be installed!" $RED
+		fi
+	else
+		echo "`fecho ${2:-$1} $GREEN` already installed!"
+	fi
+}
+
+##############################
+#### MAIN SCRIPT
+##############################
+fecho "Welcome..." $GREEN
+fecho "Let's set up this machine :)" $BLUE
+
+read -p "$(fecho 'Do you want to continue? (y/n):' $WHITE)" user_input
+if [[ "$user_input" != "y" && "$user_input" != "Y" ]]; then
+	fecho "Exiting the script." $RED
+	exit 0
+fi
+
+fecho
+fecho "Great! Let's start now..." $GREEN
+fecho
+
+fecho "This script requires sudo privileges for installation..." $BLUE
+sudo -v
+
+while true; do sudo -v; sleep 60; done &
+
+fecho "Updating the system..." $BLUE
+sudo apt update -y && sudo apt upgrade -y
+fecho "System update complete!" $GREEN
+fecho
+
+fecho "Installing essential packages..." $BLUE
+if [ -f "packages.txt" ]; then
+	packages=($(cat packages.txt))
+	total=${#packages[@]}
+
+	for i in $(seq 0 $(($total - 1))); do
+		clear_line
+		install_package "${packages[$i]}"
+		progress $(($i + 1)) $total "Installing packages"
+		sleep 1  # simulate time taken for installation
+	done
+else
+	fecho "Error: packages.txt file not found!" $RED
+	exit 1
+fi
+
+fecho
+
+fecho "Installing snap packages..." $BLUE
+if [ -f "snap_packages.txt" ]; then
+	snap_packages=($(cat snap_packages.txt))
+	total_snap=${#snap_packages[@]}
+
+	for i in $(seq 0 $(($total_snap - 1))); do
+		clear_line
+		install_snap_package "${snap_packages[$i]}"
+		progress $(($i + 1)) $total_snap "Installing snap packages"
+		sleep 1
+	done
+else
+	fecho "Error: snap_packages.txt file not found!" $RED
+	exit 1
+fi
+
+fecho
+fecho "Setup complete!" $GREEN
+fecho "Reboot or log out for all changes to take effect!" $BLUE

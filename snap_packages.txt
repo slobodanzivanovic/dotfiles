@@ -1,0 +1,5 @@
+notepad-plus-plus
+postman
+kompare
+drawio
+spotify
