@@ -77,9 +77,59 @@ install_snap_package(){
 	fi
 }
 
+link_dotfile() {
+	local source="$1"
+	local destination="$2"
+
+	if [ -e "$destination" ]; then
+		fecho "Skipping: $destination already exists." $BLUE
+	else
+		ln -s "$source" "$destination"
+		if [ $? -eq 0 ]; then
+			fecho "Successfully linked: $destination" $GREEN
+		else
+			fecho "Failed to link: $destination" $RED
+		fi
+	fi
+}
+
+install_tool_managers() {
+	fecho "Installing SDKMAN..." $BLUE
+	if [ ! -d "$HOME/.sdkman" ]; then
+		curl -s "https://get.sdkman.io" | bash
+		fecho "SDKMAN has been installed." $GREEN
+	else
+		fecho "SDKMAN is already installed!" $GREEN
+	fi
+
+	fecho "Installing NVM..." $BLUE
+	# Use the specified NVM directory
+	export NVM_DIR="$HOME/.config/nvm"
+	if [ ! -d "$NVM_DIR" ]; then
+		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+		fecho "NVM has been installed." $GREEN
+	else
+		fecho "NVM is already installed!" $GREEN
+	fi
+
+	fecho "Installing Pyenv..." $BLUE
+	# Use the specified Pyenv directory
+	export PYENV_ROOT="$HOME/.pyenv"
+	if [ ! -d "$PYENV_ROOT" ]; then
+		curl -fsSL https://pyenv.run | bash
+		fecho "Pyenv has been installed." $GREEN
+	else
+		fecho "Pyenv is already installed!" $GREEN
+	fi
+
+	fecho
+	fecho "Tool managers installation complete!" $GREEN
+}
+
 ##############################
 #### MAIN SCRIPT
 ##############################
+fecho
 fecho "Welcome..." $GREEN
 fecho "Let's set up this machine :)" $BLUE
 
@@ -98,7 +148,9 @@ sudo -v
 
 while true; do sudo -v; sleep 60; done &
 
+fecho
 fecho "Updating the system..." $BLUE
+fecho
 sudo apt update -y && sudo apt upgrade -y
 fecho "System update complete!" $GREEN
 fecho
@@ -136,6 +188,44 @@ else
 	fecho "Error: snap_packages.txt file not found!" $RED
 	exit 1
 fi
+
+fecho
+fecho "Changing default shell to Zsh..." $BLUE
+
+if [ "$(basename $SHELL)" != "zsh" ]; then
+	chsh -s $(which zsh)
+	fecho "Shell changed to Zsh!" $GREEN
+else
+	fecho "Zsh is already the default shell!" $GREEN
+fi
+
+fecho
+fecho "Setting up dotfiles..." $BLUE
+fecho
+fecho "Linking top-level dotfiles..."
+link_dotfile "$HOME/.dotfiles/home/.zshenv" "$HOME/.zshenv"
+link_dotfile "$HOME/.dotfiles/home/.vimrc" "$HOME/.vimrc"
+
+fecho
+fecho "Linking .local/bin files..."
+mkdir -p "$HOME/.local/bin"
+link_dotfile "$HOME/.dotfiles/home/.local/bin/sessionizer" "$HOME/.local/bin/sessionizer"
+link_dotfile "$HOME/.dotfiles/home/.local/bin/ssh-generate" "$HOME/.local/bin/ssh-generate"
+
+fecho
+fecho "Linking XDG_CONFIG_HOME files..."
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+mkdir -p "$XDG_CONFIG_HOME"
+
+link_dotfile "$HOME/.dotfiles/xdg_config_home/git/config" "$XDG_CONFIG_HOME/git/config"
+link_dotfile "$HOME/.dotfiles/xdg_config_home/tmux/tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
+link_dotfile "$HOME/.dotfiles/xdg_config_home/zsh/.zshrc" "$XDG_CONFIG_HOME/zsh/.zshrc"
+
+fecho
+fecho "Dotfiles symlinks completed!" $GREEN
+fecho
+
+install_tool_managers
 
 fecho
 fecho "Setup complete!" $GREEN
