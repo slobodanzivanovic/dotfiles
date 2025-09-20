@@ -150,6 +150,42 @@ install_tool_managers() {
 }
 
 ##############################
+#### SSH KEY GENERATION SCRIPT
+##############################
+generate_ssh_key() {
+	if [ -f ~/.ssh/id_rsa ]; then
+		fecho "SSH key already exists." $RED
+		read -p "$(fecho 'Do you want to overwrite the existing key? (y/n):' $WHITE)" user_input
+		if [[ "$user_input" != "y" && "$user_input" != "Y" ]]; then
+			fecho "Skipping SSH key generation." $BLUE
+			return 0
+		fi
+		fecho "Overwriting existing SSH key..." $BLUE
+	fi
+
+	ssh-keygen -t rsa -b 4096 -C "219014701+slobodanzivanovic@users.noreply.github.com" -f ~/.ssh/id_rsa
+
+	eval "$(ssh-agent -s)"
+
+	touch ~/.ssh/config
+
+	echo -e "Host *\n  AddKeysToAgent yes\n  IdentityFile ~/.ssh/id_rsa" | tee ~/.ssh/config
+
+	ssh-add ~/.ssh/id_rsa
+
+	if command -v pbcopy &> /dev/null; then
+		pbcopy < ~/.ssh/id_rsa.pub
+	elif command -v xclip &> /dev/null; then
+		xclip -sel clip < ~/.ssh/id_rsa.pub
+	else
+		echo "No clipboard utility found. Please copy the public key manually."
+		cat ~/.ssh/id_rsa.pub
+	fi
+
+	fecho "SSH key has been generated and copied to clipboard." $GREEN
+}
+
+##############################
 #### MAIN SCRIPT
 ##############################
 fecho ""
@@ -218,6 +254,9 @@ if [ "$(basename "$SHELL")" != "zsh" ]; then
 else
 	fecho "Zsh is already the default shell!" $GREEN
 fi
+
+fecho ""
+generate_ssh_key
 
 fecho ""
 fecho "Setting up dotfiles..." $BLUE
